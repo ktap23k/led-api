@@ -5,9 +5,9 @@ app = FastAPI()
 
 app.include_router(items.router, prefix="/items", tags=["items"])
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to FastAPI app!"}
+# @app.get("/")
+# def read_root():
+#     return {"message": "Welcome to FastAPI app!"}
 
 # @app.get("/list-routers")
 # def list_routers():
