@@ -9,3 +9,11 @@ services:
       - "9999:9999"
     volumes:
       - .:/app
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"     # Limits to 1 CPU core
+          memory: "500M"  # Limits to 500MB of RAM
+        reservations:
+          cpus: "0.5"     # Optional: Reserves 0.5 CPU cores
+          memory: "256M"  # Optional: Reserves 256MB of RAM
