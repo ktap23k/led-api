@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logout</title>
+  <link rel="icon" type="image/x-icon" href="/static/icon.ico">
+  <script>
+    // Hàm xử lý logout
+    function logout() {
+      // Xóa API key từ localStorage
+      localStorage.removeItem("apiKey");
+
+      // Hiển thị thông báo và chuyển hướng về trang chính
+      alert("You have been logged out!");
+      window.location.href = "/"; // Chuyển về trang chính
+    }
+
+    // Gọi hàm logout khi tải trang
+    document.addEventListener("DOMContentLoaded", logout);
+  </script>
+</head>
+<body>
+  <div style="text-align: center; margin-top: 50px;">
+    <h1>Logging out...</h1>
+    <p>If you are not redirected, click <a href="/">here</a>.</p>
+  </div>
+</body>
+</html>

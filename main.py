@@ -26,8 +26,16 @@ app.mount("/static", StaticFiles(directory="app/statics"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.get("/led", response_class=HTMLResponse)
+def read_root(request: Request):
     config = read_led_config()
     return templates.TemplateResponse("index.html", {"request": request, "config": config})
+
+@app.get("/logout", response_class=HTMLResponse)
+def read_root(request: Request):
+    return templates.TemplateResponse("logout.html", {"request": request})
 
 # @app.get("/list-routers")
 # def list_routers():

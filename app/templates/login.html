@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Key Validation</title>
+  <link rel="icon" type="image/x-icon" href="/static/icon.ico">
+  <script>
+    // Lưu API key vào localStorage
+    function saveApiKey() {
+      const apiKey = document.getElementById('api-key').value;
+      
+      const apiUrl = `http://127.0.0.1:8000/items/led/status`;
+      
+    // Thực hiện cuộc gọi API
+    fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+        'accept': 'application/json',
+        'x-api-key': apiKey,
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            localStorage.setItem("apiKey", apiKey);
+            alert("API Key is correct! Redirecting...");
+            window.location.href = "/led";
+        })
+        .catch(error => {
+        // Xử lý lỗi
+            alert("Invalid API Key. Please try again.");
+            console.error('Error:', error);
+        });
+    }
+  </script>
+</head>
+<body>
+  <!-- Form nhập API key -->
+  <div id="api-key-form" style="text-align: center; margin-top: 50px;">
+    <h1>Enter API Key</h1>
+    <input type="password" id="api-key" placeholder="Enter your API Key" style="padding: 10px; font-size: 16px;">
+    <button onclick="saveApiKey()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Submit</button>
+  </div>
+</body>
+</html>
+

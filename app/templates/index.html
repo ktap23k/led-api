@@ -5,104 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Led Control</title>
     <link rel="icon" type="image/x-icon" href="/static/icon.ico">
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f9;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          margin: 0;
-        }
-    
-        .container {
-          text-align: center;
-          background: #ffffff;
-          border-radius: 10px;
-          padding: 20px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          width: 300px;
-        }
-    
-        h1 {
-          color: #333;
-          margin-bottom: 20px;
-        }
-    
-        .led-status {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-    
-        .led {
-          width: 50px;
-          height: 50px;
-          border-radius: 50%;
-          background: grey;
-          box-shadow: inset 0 0 5px #000;
-          margin-right: 10px;
-          transition: background 0.3s ease;
-        }
-    
-        .led.on {
-          background: #00ff00;
-        }
-    
-        .led.off {
-          background: grey;
-        }
-    
-        .buttons {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-    
-        button {
-          padding: 10px;
-          border: none;
-          border-radius: 5px;
-          background: #007bff;
-          color: #fff;
-          font-size: 16px;
-          cursor: pointer;
-          transition: background 0.3s ease;
-        }
-    
-        button:hover {
-          background: #0056b3;
-        }
-    
-        .input-container {
-          margin-top: 10px;
-          display: block; /* Ẩn input khi khởi đầu */
-          display: flex;
-          flex-direction: column;
-        }
-    
-        input[type="number"] {
-          padding: 8px;
-          font-size: 16px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          text-align: center;
-        }
-        input[type="text"] {
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .send-btn {
-            margin-top: 20px;
-            display: none;
-        }
-      </style>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        text-align: center;
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 300px;
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .led-status {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .led {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: grey;
+        box-shadow: inset 0 0 5px #000;
+        margin-right: 10px;
+        transition: background 0.3s ease;
+    }
+
+    .led.on {
+        background: #00ff00;
+    }
+
+    .led.off {
+        background: grey;
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    button {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background: #007bff;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    .input-container {
+        margin-top: 10px;
+        display: block; /* Ẩn input khi khởi đầu */
+        display: flex;
+        flex-direction: column;
+    }
+
+    input[type="number"] {
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        text-align: center;
+    }
+    input[type="text"] {
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .send-btn {
+        margin-top: 20px;
+        display: none;
+    }
+    </style>
+    <script>
+        const savedApiKey = localStorage.getItem("apiKey");
+        const baseUrl= `http://led.mycode.vn/items`;
+        //const baseUrl= `http://127.0.0.1:8000/items`;
+
+        function checkApiKey() {
+            const currentPath = window.location.pathname;
+            const savedApiKey = localStorage.getItem("apiKey");
+      
+            if (!savedApiKey) {
+              alert("You need to provide an API Key first!");
+              window.location.href = "/"; // Chuyển về trang nhập key
+            }
+          }
+      
+          // Gọi hàm kiểm tra API key khi tải trang
+          document.addEventListener("DOMContentLoaded", checkApiKey);
+    </script>
 </head>
 <body>
       <div class="container">
@@ -112,15 +130,12 @@
           <span id="status-text">{% if config.led == 1 %}ON{% else %}OFF{% endif %}</span>
         </div>
         <div class="buttons">
-          <button id="toggle-btn">Turn {% if config.led == 1 %}OFF{% else %}ON{% endif %}</button>
+            <button id="btn-led">Turn {% if config.led == 1 %}OFF{%else%}ON{% endif %}</button>
         </div>
         <div class="input-container" id="input-container">
             <input type="number" id="int-input" placeholder="Enter an integer">
         </div>
-        <div class="input-container" id="input-container">
-            <input type="text" id="str-input" placeholder="Enter Key">
-        </div>
-        <div class="buttons send-btn" id="btn-api">
+        <div class="buttons send-btn" id="btn-api" {% if config.led == 1 %}style="display:flex;" {%else%} style="display:none;" {% endif %}>
             <button id="api-call-btn">Send</button>
             <div id="response" style="margin-top: 20px;"></div>
         </div>
@@ -128,32 +143,59 @@
     
       <script>
         const led = document.getElementById('led');
-        const toggleBtn = document.getElementById('toggle-btn');
         const statusText = document.getElementById('status-text');
+
+        const btnLed = document.getElementById('btn-led');
+        
         const btnContainer = document.getElementById('btn-api');
         const intInput = document.getElementById('int-input');
-        const strInput = document.getElementById('str-input');
+        const responseDiv = document.getElementById('response');
 
-    
-        let isOn = {% if config.led == 1 %}true{% else %}false{% endif %};
+        btnLed.addEventListener('click', async () => {
 
-        {% if config.led == 1 %}
-            btnContainer.style.display = 'flex';
-        {% else %}
-            btnContainer.style.display = 'none';
-        {% endif %}
+            const apiUrl = `http://127.0.0.1:8000/items/led/status`;
+      
+            // Thực hiện cuộc gọi API
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                'accept': 'application/json',
+                'x-api-key': savedApiKey,
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    // check data response
+                    return response.json();
+                })
+                .then(data => {
+                    // Hiển thị phản hồi
+                    console.log(data);
+                    if (data.led == 1) {
+                        tunrOff();
+                    } else {
+                        tunrOn();
+                    }
+                })
+                .catch(error => {
+                // Xử lý lỗi
+                    alert("Invalid API Key. Please try again.");
+                    console.error('Error:', error);
+                    window.location.href = "/";
+                });
+        });
     
-        toggleBtn.addEventListener('click', () => {
-            isOn = !isOn;
-          if (isOn) {
-            const apiUrl = `http://led.mycode.vn/items/led/config/on/${intInput.value ?? 20000}`;
+        function tunrOn () {
+            const apiUrl = `${baseUrl}/led/config/on/${intInput.value ?? 20000}`;
       
             // Thực hiện cuộc gọi API
             fetch(apiUrl, {
               method: 'POST',
               headers: {
                 'accept': 'application/json',
-                'x-api-key': strInput.value
+                'x-api-key': savedApiKey
               },
               body: '' // Nội dung body rỗng theo yêu cầu của bạn
             })
@@ -164,70 +206,65 @@
                 led.classList.remove('off');
                 led.classList.add('on');
                 statusText.textContent = 'ON';
-                toggleBtn.textContent = 'Turn OFF';
                 btnContainer.style.display = 'flex';
-                return response.json();
-                isOn = true;
+                btnLed.textContent = 'Turn OFF';
+
+                //window.location.href = "/led";
               })
               .then(data => {
                 // Hiển thị phản hồi
-                responseDiv.textContent = `API Response: ${JSON.stringify(data)}`;
+                //responseDiv.textContent = `API Response: ${JSON.stringify(data)}`;
+                console.log(data);
               })
               .catch(error => {
-                isOn = false;
                 // Xử lý lỗi
-                responseDiv.textContent = `Error: ${error.message}`;
+                console.log(error);
+                alert("Error: " + error.message);
               });
 
-          } else {
-            const apiUrl = `http://led.mycode.vn/items/led/off`;
-      
+          };
+
+        function tunrOff ()  {
+            const apiUrl = `${baseUrl}/led/off`;
+        
             // Thực hiện cuộc gọi API
             fetch(apiUrl, {
-              method: 'POST',
-              headers: {
+                method: 'POST',
+                headers: {
                 'accept': 'application/json',
-                'x-api-key': strInput.value
-              },
-              body: '' // Nội dung body rỗng theo yêu cầu của bạn
+                'x-api-key': savedApiKey
+                },
+                body: '' // Nội dung body rỗng theo yêu cầu của bạn
             })
-              .then(response => {
+                .then(response => {
                 if (!response.ok) {
-                  throw new Error(`HTTP error! Status: ${response.status}`);
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                led.classList.remove('on');
-                led.classList.add('off');
-                statusText.textContent = 'OFF';
-                toggleBtn.textContent = 'Turn ON';
-                btnContainer.style.display = 'none';
-                isOn = false;
-                return response.json();
-              })
-              .then(data => {
-                // Hiển thị phản hồi
-                responseDiv.textContent = `API Response: ${JSON.stringify(data)}`;
-              })
-              .catch(error => {
-                isOn = true;
+                    led.classList.remove('on');
+                    led.classList.add('off');
+                    statusText.textContent = 'OFF';
+                    btnContainer.style.display = 'none';
+                    btnLed.textContent = 'Turn ON';
+
+                    //window.location.href = "/led";
+                })
+                .catch(error => {
                 // Xử lý lỗi
-                responseDiv.textContent = `Error: ${error.message}`;
-              });
-          }
-        });
+                    console.log(error);
+                    alert("Error: " + error.message);
+                });
+        };
 
         document.getElementById('api-call-btn').addEventListener('click', () => {
             // Hiển thị trạng thái đang gửi
-            const responseDiv = document.getElementById('response');
-            responseDiv.textContent = 'Sending API request...';
-
-            const apiUrl = `http://led.mycode.vn/items/led/config/on/${intInput.value}`;
+            const apiUrl = `${baseUrl}/led/config/on/${intInput.value ?? 20000}`;
       
             // Thực hiện cuộc gọi API
             fetch(apiUrl, {
               method: 'POST',
               headers: {
                 'accept': 'application/json',
-                'x-api-key': strInput.value
+                'x-api-key': savedApiKey
               },
               body: '' // Nội dung body rỗng theo yêu cầu của bạn
             })
@@ -235,15 +272,12 @@
                 if (!response.ok) {
                   throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                return response.json();
-              })
-              .then(data => {
-                // Hiển thị phản hồi
-                responseDiv.textContent = `API Response: ${JSON.stringify(data)}`;
+                alert("Led is setting up!");
               })
               .catch(error => {
                 // Xử lý lỗi
-                responseDiv.textContent = `Error: ${error.message}`;
+                alert("Error: " + error.message);
+                console.log(error);
               });
           });
       </script>
