@@ -147,12 +147,6 @@
           isOn = !isOn;
     
           if (isOn) {
-            led.classList.remove('off');
-            led.classList.add('on');
-            statusText.textContent = 'ON';
-            toggleBtn.textContent = 'Turn OFF';
-            btnContainer.style.display = 'flex';
-
             const apiUrl = `http://led.mycode.vn/items/led/config/on/${intInput.value ?? 20000}`;
       
             // Thực hiện cuộc gọi API
@@ -168,6 +162,11 @@
                 if (!response.ok) {
                   throw new Error(`HTTP error! Status: ${response.status}`);
                 }
+                led.classList.remove('off');
+                led.classList.add('on');
+                statusText.textContent = 'ON';
+                toggleBtn.textContent = 'Turn OFF';
+                btnContainer.style.display = 'flex';
                 return response.json();
               })
               .then(data => {
@@ -180,12 +179,6 @@
               });
 
           } else {
-            led.classList.remove('on');
-            led.classList.add('off');
-            statusText.textContent = 'OFF';
-            toggleBtn.textContent = 'Turn ON';
-            btnContainer.style.display = 'none';
-
             const apiUrl = `http://led.mycode.vn/items/led/off`;
       
             // Thực hiện cuộc gọi API
@@ -201,6 +194,11 @@
                 if (!response.ok) {
                   throw new Error(`HTTP error! Status: ${response.status}`);
                 }
+                led.classList.remove('on');
+                led.classList.add('off');
+                statusText.textContent = 'OFF';
+                toggleBtn.textContent = 'Turn ON';
+                btnContainer.style.display = 'none';
                 return response.json();
               })
               .then(data => {
