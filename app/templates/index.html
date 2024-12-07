@@ -167,13 +167,14 @@
                 toggleBtn.textContent = 'Turn OFF';
                 btnContainer.style.display = 'flex';
                 return response.json();
+                isOn = true;
               })
               .then(data => {
                 // Hiển thị phản hồi
                 responseDiv.textContent = `API Response: ${JSON.stringify(data)}`;
               })
               .catch(error => {
-                isOn = !isOn;
+                isOn = false;
                 // Xử lý lỗi
                 responseDiv.textContent = `Error: ${error.message}`;
               });
@@ -199,6 +200,7 @@
                 statusText.textContent = 'OFF';
                 toggleBtn.textContent = 'Turn ON';
                 btnContainer.style.display = 'none';
+                isOn = false;
                 return response.json();
               })
               .then(data => {
@@ -206,7 +208,7 @@
                 responseDiv.textContent = `API Response: ${JSON.stringify(data)}`;
               })
               .catch(error => {
-                isOn = !isOn;
+                isOn = true;
                 // Xử lý lỗi
                 responseDiv.textContent = `Error: ${error.message}`;
               });
