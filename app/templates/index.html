@@ -153,6 +153,31 @@
             toggleBtn.textContent = 'Turn OFF';
             btnContainer.style.display = 'flex';
 
+            const apiUrl = `http://led.mycode.vn/items/led/config/on/${intInput.value ?? 20000}`;
+      
+            // Thực hiện cuộc gọi API
+            fetch(apiUrl, {
+              method: 'POST',
+              headers: {
+                'accept': 'application/json',
+                'x-api-key': strInput.value
+              },
+              body: '' // Nội dung body rỗng theo yêu cầu của bạn
+            })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+              })
+              .then(data => {
+                // Hiển thị phản hồi
+                responseDiv.textContent = `API Response: ${JSON.stringify(data)}`;
+              })
+              .catch(error => {
+                // Xử lý lỗi
+                responseDiv.textContent = `Error: ${error.message}`;
+              });
 
           } else {
             led.classList.remove('on');
