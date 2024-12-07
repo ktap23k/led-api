@@ -144,6 +144,7 @@
         {% endif %}
     
         toggleBtn.addEventListener('click', () => {
+            isOn = !isOn;
           if (isOn) {
             const apiUrl = `http://led.mycode.vn/items/led/config/on/${intInput.value ?? 20000}`;
       
@@ -165,7 +166,6 @@
                 statusText.textContent = 'ON';
                 toggleBtn.textContent = 'Turn OFF';
                 btnContainer.style.display = 'flex';
-                isOn = !isOn;
                 return response.json();
               })
               .then(data => {
@@ -173,6 +173,7 @@
                 responseDiv.textContent = `API Response: ${JSON.stringify(data)}`;
               })
               .catch(error => {
+                isOn = !isOn;
                 // Xử lý lỗi
                 responseDiv.textContent = `Error: ${error.message}`;
               });
@@ -198,7 +199,6 @@
                 statusText.textContent = 'OFF';
                 toggleBtn.textContent = 'Turn ON';
                 btnContainer.style.display = 'none';
-                isOn = !isOn;
                 return response.json();
               })
               .then(data => {
@@ -206,6 +206,7 @@
                 responseDiv.textContent = `API Response: ${JSON.stringify(data)}`;
               })
               .catch(error => {
+                isOn = !isOn;
                 // Xử lý lỗi
                 responseDiv.textContent = `Error: ${error.message}`;
               });
