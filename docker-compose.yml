@@ -19,3 +19,4 @@ services:
         reservations:
           cpus: "0.5"     # Optional: Reserves 0.5 CPU cores
           memory: "256M"  # Optional: Reserves 256MB of RAM
+    restart: always
