@@ -5,14 +5,16 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Copy the requirements file into the container
-COPY requirements.txt .
+# COPY requirements.txt .
 
 # Install the dependencies
 # RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
+# RUN pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
 # Copy the rest of the application code into the container
 COPY . .
+
+RUN source venv/bin/activate
 
 # Copy the .env file into the container
 COPY .env .
