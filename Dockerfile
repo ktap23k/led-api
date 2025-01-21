@@ -7,7 +7,6 @@ WORKDIR /app
 # Copy the requirements file into the container
 COPY requirements.txt .
 
-RUN python -m pip install --upgrade pip
 # Install the dependencies
 # RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install -r requirements.txt -i https://pypi.mirrors.ustc.edu.cn/simple/
