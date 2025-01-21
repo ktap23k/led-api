@@ -38,7 +38,7 @@ def scheduled_task():
         data = {"led": 1, "seed": 40000}
     if datetime.datetime.now(timezone).hour == 12:
         data = {"led": 1, "seed": 60000}
-    if datetime.datetime.now(timezone).hour == 18:
+    if datetime.datetime.now(timezone).hour >= 18:
         data = {"led": 0, "seed": 0}
     write_led_config(data)
 
