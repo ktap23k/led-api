@@ -14,7 +14,7 @@ WORKDIR /app
 # Copy the rest of the application code into the container
 COPY . .
 
-RUN source venv/bin/activate
+RUN . venv/bin/activate
 
 # Copy the .env file into the container
 COPY .env .
