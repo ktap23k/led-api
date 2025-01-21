@@ -8,13 +8,11 @@ WORKDIR /app
 # COPY requirements.txt .
 
 # Install the dependencies
-# RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt --timeout 1000
 # RUN pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
 # Copy the rest of the application code into the container
 COPY . .
-
-RUN . venv/bin/activate
 
 # Copy the .env file into the container
 COPY .env .
