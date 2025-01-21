@@ -9,7 +9,7 @@ COPY requirements.txt .
 
 # Install the dependencies
 # RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install -r requirements.txt -i https://pypi.mirrors.ustc.edu.cn/simple/
+RUN pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
 # Copy the rest of the application code into the container
 COPY . .
