@@ -17,7 +17,8 @@
     <script>
         // Lấy địa chỉ host của trang web hiện tại
         const host = window.location.host;
-        const WEBSOCKET_URL = `ws://${host}/ws/viewer`;
+        const apiKey = localStorage.getItem('apiKey');
+        const WEBSOCKET_URL = `ws://${host}/ws/viewer?api_key=${apiKey}`;
         
         const imgElement = document.getElementById('stream');
         const viewersCountElement = document.getElementById('viewers-count');

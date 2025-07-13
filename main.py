@@ -222,7 +222,9 @@ async def get(request: Request):
 
 
 @app.websocket("/ws/viewer")
-async def websocket_viewer_endpoint(websocket: WebSocket):
+async def websocket_viewer_endpoint(
+    websocket: WebSocket, api_key: str = Depends(get_api_key)
+):
     """Endpoint cho các viewer (trình duyệt) kết nối."""
     await manager.connect(websocket)
     await manager.broadcast_viewer_count()  # Cập nhật số lượng cho mọi người
