@@ -14,7 +14,6 @@ router = APIRouter()
 def verify_api_key(x_api_key: str = Header(None)):
     # Get the API key from environment variables
     APIKEY = os.getenv("API_KEYS")
-    print(APIKEY, x_api_key)
 
     if x_api_key != APIKEY:
         raise HTTPException(

@@ -1,5 +1,5 @@
 import os
-from fastapi import Depends, FastAPI, HTTPException, status, Header, Request
+from fastapi import Depends, FastAPI, HTTPException, Query, status, Header, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -102,7 +102,6 @@ def read_root(request: Request):
 def verify_api_key(x_api_key: str = Header(None)):
     # Get the API key from environment variables
     APIKEY = os.getenv("API_KEYS")
-    print(APIKEY, x_api_key)
 
     if x_api_key != APIKEY:
         raise HTTPException(
@@ -130,16 +129,36 @@ async def frame_generator():
         await asyncio.sleep(0.01)
 
 
+async def get_api_key(api_key_query: str = Query(None, alias="api_key")):
+    # Ưu tiên key từ header, nếu không có thì lấy từ query
+    API_KEY = os.getenv("API_KEYS")
+
+    if api_key_query == API_KEY:
+        return api_key_query
+
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN, detail="Could not validate credentials"
+    )
+
+
 @app.get("/video_feed")
-async def video_feed(api_key: str = Depends(verify_api_key)):
+async def video_feed(api_key: str = Depends(get_api_key)):
     """Endpoint để xem video stream."""
     return StreamingResponse(
         frame_generator(), media_type="multipart/x-mixed-replace; boundary=frame"
     )
 
 
+@app.get("/video", response_class=HTMLResponse)
+async def read_root(request: Request):
+    """Phục vụ trang web chính bằng template stream_video.html."""
+    return templates.TemplateResponse("stream_video.html", {"request": request})
+
+
 @app.post("/upload")
-async def upload_image(request: Request):  # Sửa tham số thành request: Request
+async def upload_image(
+    request: Request, api_key: str = Depends(verify_api_key)
+):  # Sửa tham số thành request: Request
     """Endpoint để nhận ảnh trực tiếp từ request body."""
     global last_frame
     try:
