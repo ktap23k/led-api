@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FastAPI WebSocket Stream</title>
+    <style>
+        body { font-family: sans-serif; background: #222; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: white;}
+        img { max-width: 90vw; max-height: 90vh; border: 2px solid #555; background: #000; }
+        .info { position: absolute; top: 10px; left: 10px; }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <p>Viewer connections: <span id="viewers-count">0</span></p>
+    </div>
+    <img id="stream" alt="Waiting for stream...">
+    
+    <script>
+        // Lấy địa chỉ host của trang web hiện tại
+        const host = window.location.host;
+        const WEBSOCKET_URL = `ws://${host}/ws/viewer`;
+        
+        const imgElement = document.getElementById('stream');
+        const viewersCountElement = document.getElementById('viewers-count');
+        let objectUrl;
+
+        function connect() {
+            const socket = new WebSocket(WEBSOCKET_URL);
+            
+            socket.onopen = () => {
+                console.log('Connected to WebSocket server as a viewer.');
+                imgElement.alt = "Connected, waiting for camera...";
+            };
+
+            socket.onmessage = (event) => {
+                // Phân biệt message frame hình ảnh và message số lượng viewer
+                if (event.data instanceof Blob) {
+                    if (objectUrl) {
+                        URL.revokeObjectURL(objectUrl);
+                    }
+                    objectUrl = URL.createObjectURL(event.data);
+                    imgElement.src = objectUrl;
+                } else {
+                    // Cập nhật số lượng viewer
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'viewers') {
+                        viewersCountElement.textContent = data.count;
+                    }
+                }
+            };
+
+            socket.onclose = () => {
+                console.log('WebSocket disconnected. Reconnecting in 2 seconds...');
+                imgElement.alt = "Connection lost. Retrying...";
+                setTimeout(connect, 2000);
+            };
+            
+            socket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                socket.close();
+            };
+        }
+
+        connect();
+    </script>
+</body>
+</html>

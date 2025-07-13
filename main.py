@@ -177,3 +177,75 @@ async def upload_image(
     except Exception as e:
         print(f"Error: {e}")
         return {"message": "Error processing frame"}, 500
+
+
+from typing import List
+from fastapi import WebSocket, WebSocketDisconnect
+
+
+class ConnectionManager:
+    """Quản lý các kết nối WebSocket của viewer."""
+
+    def __init__(self):
+        self.active_viewers: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_viewers.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_viewers.remove(websocket)
+
+    async def broadcast_image(self, image_data: bytes):
+        """Gửi dữ liệu hình ảnh đến tất cả các viewer."""
+        if self.active_viewers:
+            tasks = [viewer.send_bytes(image_data) for viewer in self.active_viewers]
+            await asyncio.gather(*tasks, return_exceptions=False)
+
+    async def broadcast_viewer_count(self):
+        """Gửi số lượng viewer hiện tại đến tất cả viewer."""
+        count_message = {"type": "viewers", "count": len(self.active_viewers)}
+        if self.active_viewers:
+            # Dùng websockets.broadcast tiện hơn gather
+            # nhưng vì FastAPI không có sẵn nên dùng gather
+            tasks = [viewer.send_json(count_message) for viewer in self.active_viewers]
+            await asyncio.gather(*tasks, return_exceptions=False)
+
+
+manager = ConnectionManager()
+
+
+@app.get("/stream-cam")
+async def get(request: Request):
+    """Endpoint trả về trang web HTML."""
+    return templates.TemplateResponse("stream_cam.html", {"request": request})
+
+
+@app.websocket("/ws/viewer")
+async def websocket_viewer_endpoint(websocket: WebSocket):
+    """Endpoint cho các viewer (trình duyệt) kết nối."""
+    await manager.connect(websocket)
+    await manager.broadcast_viewer_count()  # Cập nhật số lượng cho mọi người
+    try:
+        while True:
+            # Giữ kết nối mở, không cần nhận dữ liệu từ viewer
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+        await manager.broadcast_viewer_count()  # Cập nhật lại số lượng
+        print("A viewer disconnected.")
+
+
+@app.websocket("/ws/camera")
+async def websocket_camera_endpoint(websocket: WebSocket):
+    """Endpoint cho ESP32-CAM kết nối và gửi frame."""
+    await websocket.accept()
+    print("Camera connected.")
+    try:
+        while True:
+            # Nhận dữ liệu hình ảnh dạng bytes từ camera
+            image_bytes = await websocket.receive_bytes()
+            # Broadcast hình ảnh đến tất cả các viewer đang kết nối
+            await manager.broadcast_image(image_bytes)
+    except WebSocketDisconnect:
+        print("Camera disconnected.")
